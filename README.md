@@ -30,19 +30,16 @@ The application uses:
 ### Installation
 
 1. Clone the repository:
-```bash
-git clone [repository-url]
-cd solana-tornado
-```
+
 
 2. Install dependencies:
 ```bash
-npm install
+pnpm install
 ```
 
 3. Start the development server:
 ```bash
-npm run dev
+pnpm dev
 ```
 
 ## Usage
@@ -73,15 +70,4 @@ Built with:
 - Anchor Framework
 - Radix UI Components
 
-## License
-
-[Add your license information here]
-
-## Support
-
-For support, please [add your support contact information]
-
-## Contributing
-
-[Add contribution guidelines if applicable]
 
