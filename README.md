@@ -69,5 +69,4 @@ Built with:
 - Solana Web3.js
 - Anchor Framework
 - Radix UI Components
-
 If you have issues, feel free to create an issue on this repository
