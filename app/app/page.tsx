@@ -18,6 +18,7 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { useToast } from '@/hooks/use-toast'
 import { useConnection, useAnchorWallet } from '@solana/wallet-adapter-react'
 import { AnchorProvider, Program } from '@coral-xyz/anchor'
+import NodeWallet from '@coral-xyz/anchor'
 import { WalletMultiButton } from '@solana/wallet-adapter-react-ui'
 import {
   deserializeNote,
@@ -33,6 +34,7 @@ import {
   PublicKey,
   SystemProgram,
   ComputeBudgetProgram,
+  Connection,
 } from '@solana/web3.js'
 import * as borsh from '@coral-xyz/borsh'
 import { fetchDepositList } from '@/components/deposit-fetch'
@@ -46,6 +48,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
+import { getSigner } from '@/server/privatekey'
 
 export default function MainInterface() {
   const { connection } = useConnection()
@@ -198,7 +201,7 @@ export default function MainInterface() {
 
     const proofBuf = Buffer.from(proof_bytes)
     const publicInputsBuf = Buffer.from(public_inputs)
-
+    const nullifierBuf = public_inputs.slice(32, 64)
     if (!(proofBuf.length > 0 && publicInputsBuf.length > 0)) return
 
     const additionalComputeBudgetInstruction =
@@ -207,8 +210,28 @@ export default function MainInterface() {
       })
 
     try {
-      await program.methods
-        .withdraw(proofBuf, publicInputsBuf)
+      const tempconnection = new Connection(DEVNET_RPC_URL, {
+        commitment: 'confirmed',
+      })
+      const tempSigner = await getSigner()
+      const wallet = {
+        publicKey: tempSigner.publicKey,
+        signTransaction: async (tx: any) => {
+          tx.partialSign(tempSigner)
+          return tx
+        },
+        signAllTransactions: async (txs: any) => {
+          txs.forEach((tx: any) => tx.partialSign(tempSigner))
+          return txs
+        },
+        payer: tempSigner,
+      }
+      const tempprovider = new AnchorProvider(tempconnection, wallet, {
+        commitment: 'confirmed',
+      })
+      const tempprogram = new Program<SolanaMixer>(MixerIdl, tempprovider)
+      await tempprogram.methods
+        .withdraw([...nullifierBuf], proofBuf, publicInputsBuf)
         .accounts({
           caller: wallet.publicKey,
           recipient: new PublicKey(recipientAddress),
@@ -234,21 +257,21 @@ export default function MainInterface() {
   }
 
   return (
-    <div className="page-container">
+    <div className="page-container bg-gradient-to-b from-background to-background/80">
       <WalletContextProvider>
         <TooltipProvider>
           <ModalProvider>
             <Navbar />
             <div className="main-content py-8">
-              <div className="max-w-5xl w-full px-4">
-                <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
+              <div className="max-w-5xl w-full px-4 mx-auto">
+                <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
                   <div className="lg:col-span-3">
                     <div className="relative">
                       <div className="flex">
                         <div
                           className={`relative cursor-pointer py-3 px-6 text-center font-medium z-10 ${
                             activeTab === 'deposit'
-                              ? 'bg-accent text-accent-foreground'
+                              ? 'bg-gradient-to-r from-purple-500 to-blue-500 text-white'
                               : 'bg-background/80 text-muted-foreground hover:text-foreground'
                           }`}
                           style={{
@@ -262,7 +285,7 @@ export default function MainInterface() {
                         <div
                           className={`relative cursor-pointer py-3 px-6 text-center font-medium z-10 -ml-4 ${
                             activeTab === 'withdraw'
-                              ? 'bg-accent text-accent-foreground'
+                              ? 'bg-gradient-to-r from-purple-500 to-blue-500 text-white'
                               : 'bg-background/80 text-muted-foreground hover:text-foreground'
                           }`}
                           style={{
@@ -276,15 +299,15 @@ export default function MainInterface() {
                         </div>
                       </div>
 
-                      <Card className="border rounded-t-none rounded-b-lg">
+                      <Card className="border border-purple-500/20 rounded-t-none rounded-b-lg shadow-lg shadow-purple-500/5">
                         {activeTab === 'deposit' ? (
-                          <div className="p-4 space-y-4">
+                          <div className="p-6 space-y-5">
                             <div className="space-y-2">
                               <label className="block text-sm font-medium text-muted-foreground">
                                 Token
                               </label>
                               <Select value={token} onValueChange={setToken}>
-                                <SelectTrigger className="w-full bg-background border">
+                                <SelectTrigger className="w-full bg-background/50 border border-purple-500/20">
                                   <SelectValue placeholder="Select token" />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -300,11 +323,15 @@ export default function MainInterface() {
                                 </label>
                                 <Tooltip>
                                   <TooltipTrigger asChild>
-                                    <div className="flex items-center text-xs text-accent">
+                                    <div className="flex items-center text-xs text-purple-400">
                                       <Info className="w-3 h-3 mr-1" />
                                     </div>
                                   </TooltipTrigger>
-                                  <TooltipContent side="left" align="center">
+                                  <TooltipContent
+                                    side="left"
+                                    align="center"
+                                    className="bg-background/90 border border-purple-500/20"
+                                  >
                                     <span>The denominator to deposit</span>
                                     <br />
                                     <span>Currently only 1 SOL</span>
@@ -320,14 +347,14 @@ export default function MainInterface() {
                             </div>
 
                             <Button
-                              className="w-full bg-accent hover:bg-accent/90 text-accent-foreground font-medium py-4"
+                              className="w-full bg-gradient-to-r from-purple-500 to-blue-500 hover:opacity-90 text-white font-medium py-5 rounded-md"
                               onClick={handleDeposit}
                             >
                               {wallet ? 'Deposit' : 'Connect'}
                             </Button>
                           </div>
                         ) : (
-                          <div className="p-4 space-y-4">
+                          <div className="p-6 space-y-5">
                             <div className="space-y-2">
                               <label className="block text-sm font-medium text-muted-foreground">
                                 Note
@@ -337,7 +364,7 @@ export default function MainInterface() {
                                 placeholder="Please enter your note"
                                 value={note}
                                 onChange={(e) => setNote(e.target.value)}
-                                className="font-mono text-sm bg-background/50 w-full p-2 rounded-md border border-input resize-y min-h-[80px]"
+                                className="font-mono text-sm bg-background/50 w-full p-3 rounded-md border border-purple-500/20 resize-y min-h-[80px]"
                               />
                             </div>
 
@@ -352,12 +379,12 @@ export default function MainInterface() {
                                 onChange={(e) =>
                                   setRecipientAddress(e.target.value)
                                 }
-                                className="font-mono text-sm bg-background/50"
+                                className="font-mono text-sm bg-background/50 border-purple-500/20"
                               />
                             </div>
 
                             <Button
-                              className="w-full bg-accent hover:bg-accent/90 text-accent-foreground font-medium py-4"
+                              className="w-full bg-gradient-to-r from-purple-500 to-blue-500 hover:opacity-90 text-white font-medium py-5 rounded-md"
                               onClick={() => {
                                 if (note && recipientAddress) {
                                   WithdrawFundsFromMixer({
@@ -376,7 +403,7 @@ export default function MainInterface() {
                               {wallet ? (
                                 <>
                                   {loading.withdraw && (
-                                    <div className="ml-2 h-4 w-4 animate-spin rounded-full border-2 border-current border-t-black" />
+                                    <div className="ml-2 h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
                                   )}
                                   Withdraw
                                 </>
@@ -393,14 +420,16 @@ export default function MainInterface() {
                   {/* Right pane */}
                   <div className="lg:col-span-2">
                     <div className="flex items-center justify-between mb-3">
-                      <h2 className="text-lg font-bold">Statistics</h2>
-                      <div className="bg-background border rounded-full px-3 py-1 text-xs flex items-center">
-                        <span className="text-accent">{amount} SOL</span>
+                      <h2 className="text-lg font-bold bg-gradient-to-r from-purple-500 to-blue-500 bg-clip-text text-transparent">
+                        Statistics
+                      </h2>
+                      <div className="bg-background/50 border border-purple-500/20 rounded-full px-3 py-1 text-xs flex items-center">
+                        <span className="text-purple-500">{amount} SOL</span>
                       </div>
                     </div>
 
-                    <Card className="border rounded-lg">
-                      <div className="p-4 space-y-4">
+                    <Card className="border border-purple-500/20 rounded-lg shadow-lg shadow-purple-500/5">
+                      <div className="p-6 space-y-5">
                         <div className="flex items-center justify-between">
                           <div className="flex items-center">
                             <span className="text-muted-foreground text-sm">
@@ -408,11 +437,15 @@ export default function MainInterface() {
                             </span>
                             <Tooltip>
                               <TooltipTrigger asChild>
-                                <div className="ml-2 w-5 h-5 rounded-full bg-accent flex items-center justify-center text-xs text-accent-foreground font-bold">
+                                <div className="ml-2 w-5 h-5 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 flex items-center justify-center text-xs text-white font-bold">
                                   ?
                                 </div>
                               </TooltipTrigger>
-                              <TooltipContent side="top" align="center">
+                              <TooltipContent
+                                side="top"
+                                align="center"
+                                className="bg-background/90 border border-purple-500/20"
+                              >
                                 <span>The number of deposits</span>
                                 <br />
                                 <span>in the set from which your </span>
@@ -435,7 +468,7 @@ export default function MainInterface() {
                             {deposits.map((deposit) => (
                               <div
                                 key={deposit.id}
-                                className="bg-background border rounded p-2 text-xs"
+                                className="bg-background/50 border border-purple-500/20 rounded p-2 text-xs"
                               >
                                 <div className="flex justify-between">
                                   <span>{deposit.id}</span>
@@ -453,7 +486,7 @@ export default function MainInterface() {
                 </div>
               </div>
             </div>
-            <footer className="footer py-4">
+            <footer className="footer py-4 border-t border-purple-500/10">
               <div className="container mx-auto px-4 text-xs text-muted-foreground">
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                   <div>
@@ -462,7 +495,7 @@ export default function MainInterface() {
                       <Link
                         href="https://solscan.io/address/AkMYNCURMts5zjKeCCnwx1tusiMTHJjWi2v1F1c5Sqdc"
                         target="_blank"
-                        className="text-foreground"
+                        className="text-purple-400 hover:text-purple-500 transition-colors"
                       >
                         AkMYNCURMts5zjKeCCnwx1tusiMTHJjWi2v1F1c5Sqdc
                       </Link>
@@ -474,7 +507,7 @@ export default function MainInterface() {
                       href="https://x.com/oziprof"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="hover:text-foreground transition-colors"
+                      className="text-muted-foreground hover:text-purple-500 transition-colors"
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -492,10 +525,10 @@ export default function MainInterface() {
                       </svg>
                     </a>
                     <a
-                      href="https://github.com/0xPr0f/retroOS-arcade"
+                      href="https://github.com/2kcmte/solana-mixer-core"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="hover:text-foreground transition-colors"
+                      className="text-muted-foreground hover:text-purple-500 transition-colors"
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -581,12 +614,12 @@ export default function MainInterface() {
           including Solana Mixer developers.
         </p>
 
-        <div className="bg-muted/30 p-3 rounded-md font-mono text-xs break-all relative group">
+        <div className="bg-background/50 p-3 rounded-md font-mono text-xs break-all relative group border border-purple-500/20">
           {note}
           <Button
             variant="ghost"
             size="icon"
-            className="absolute right-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100"
+            className="absolute right-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 text-purple-500"
             onClick={() => {
               navigator.clipboard.writeText(note)
               setCopied(true)
@@ -606,12 +639,14 @@ export default function MainInterface() {
           variant="outline"
           onClick={() => downloadNoteFile(note)}
           disabled={!note}
+          className="border-purple-500/20 text-purple-500 hover:bg-purple-500/10"
         >
-          <ArrowDownToLine />
+          <ArrowDownToLine className="mr-2" />
+          Download Note
         </Button>
         <p className="text-sm">
           The browser will ask to save your note as a file:
-          <span className="font-mono text-xs ml-1">
+          <span className="font-mono text-xs ml-1 text-purple-400">
             backup-solana-mixer-{amount.toString().toLowerCase()}.txt
           </span>
         </p>
@@ -628,6 +663,7 @@ export default function MainInterface() {
             id="backup-confirmation"
             checked={noteBackedUp}
             onCheckedChange={(c) => setNoteBackedUp(c as boolean)}
+            className="border-purple-500 text-purple-500"
           />
           <label htmlFor="backup-confirmation" className="text-sm font-medium">
             I backed up the note
@@ -635,7 +671,7 @@ export default function MainInterface() {
         </div>
 
         <Button
-          className="w-full bg-accent hover:bg-accent/90 text-accent-foreground flex items-center justify-center"
+          className="w-full bg-gradient-to-r from-purple-500 to-blue-500 hover:opacity-90 text-white flex items-center justify-center py-5 rounded-md"
           disabled={!noteBackedUp || loading}
           onClick={async () => {
             setLoading(true)
@@ -654,7 +690,7 @@ export default function MainInterface() {
         >
           {loading && (
             <div
-              className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-current border-t-black"
+              className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent"
               aria-label="loading"
             />
           )}{' '}

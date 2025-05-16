@@ -33,19 +33,19 @@ export function Navbar() {
         <div className="flex h-16 items-center justify-between">
           <div className="flex items-center">
             <Link href="/" className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-full solana-gradient-bg flex items-center justify-center">
+              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-600 to-teal-400 flex items-center justify-center animate-pulse-slow">
                 <div className="w-6 h-6 rounded-full bg-background flex items-center justify-center">
-                  <div className="w-4 h-4 rounded-full solana-gradient-bg"></div>
+                  <div className="w-4 h-4 rounded-full bg-gradient-to-br from-purple-600 to-teal-400"></div>
                 </div>
               </div>
-              <span className="text-xl font-bold solana-gradient-text">
+              <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 via-blue-500 to-teal-400">
                 Solana Mixer
               </span>
             </Link>
 
             <div className="hidden md:flex ml-10 space-x-8">
               <Link
-                href="/docs"
+                href="https://github.com/2kcmte/solana-mixer-core"
                 className="text-muted-foreground hover:text-foreground px-3 py-2 text-sm font-medium flex items-center transition-colors"
               >
                 <FileText className="w-4 h-4 mr-1" /> Docs
@@ -90,7 +90,7 @@ export function Navbar() {
 */}
           <div className="flex items-center gap-3">
             <div className="wallet-adapter-dropdown">
-              <WalletMultiButton className="wallet-adapter-button wallet-adapter-button-trigger bg-secondary hover:bg-secondary/80 text-foreground border border-border/50 rounded-md px-4 py-2 font-medium transition-all hover:glow-effect" />
+              <WalletMultiButton className="wallet-adapter-button wallet-adapter-button-trigger bg-gradient-to-r from-purple-600 to-teal-400 hover:shadow-[0_0_15px_rgba(139,92,246,0.5)] text-white border border-border/50 rounded-md px-4 py-2 font-medium transition-all duration-300 transform hover:-translate-y-1" />
             </div>
 
             {mounted && (
@@ -161,7 +161,7 @@ export function Navbar() {
               </div>
             </Button> */}
             <div className="wallet-adapter-dropdown">
-              <WalletMultiButton className="wallet-adapter-button wallet-adapter-button-trigger bg-secondary hover:bg-secondary/80 text-foreground border border-border/50 rounded-md px-4 py-2 font-medium transition-all hover:glow-effect" />
+              <WalletMultiButton className="wallet-adapter-button wallet-adapter-button-trigger bg-gradient-to-r from-purple-600 to-teal-400 hover:shadow-[0_0_15px_rgba(139,92,246,0.5)] text-white border border-border/50 rounded-md px-4 py-2 font-medium transition-all duration-300 transform hover:-translate-y-1" />
             </div>
           </div>
         </div>

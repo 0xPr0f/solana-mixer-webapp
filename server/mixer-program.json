@@ -1,5 +1,5 @@
 {
-  "address": "B7odahygLXdwCYmJteVyBFXXe9qEW5hyvCXieRGBoTTz",
+  "address": "62uKm8yeust7nZbf9nKZ7Jx5ncP9AZucBUSToQLACnmh",
   "metadata": {
     "name": "solana_mixer",
     "version": "0.1.0",
@@ -97,7 +97,20 @@
           }
         },
         {
+          "name": "nullifier",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "arg",
+                "path": "nullifier_bytes"
+              }
+            ]
+          }
+        },
+        {
           "name": "caller",
+          "writable": true,
           "signer": true
         },
         {
@@ -115,6 +128,12 @@
       ],
       "args": [
         {
+          "name": "nullifier_bytes",
+          "type": {
+            "array": ["u8", 32]
+          }
+        },
+        {
           "name": "proof",
           "type": "bytes"
         },
@@ -126,6 +145,10 @@
     }
   ],
   "accounts": [
+    {
+      "name": "Nullifier",
+      "discriminator": [18, 56, 142, 165, 181, 158, 187, 133]
+    },
     {
       "name": "State",
       "discriminator": [216, 146, 107, 94, 104, 75, 182, 177]
@@ -207,6 +230,13 @@
       }
     },
     {
+      "name": "Nullifier",
+      "type": {
+        "kind": "struct",
+        "fields": []
+      }
+    },
+    {
       "name": "State",
       "type": {
         "kind": "struct",
@@ -253,14 +283,6 @@
                 },
                 33
               ]
-            }
-          },
-          {
-            "name": "nullifiers_used",
-            "type": {
-              "vec": {
-                "array": ["u8", 32]
-              }
             }
           },
           {

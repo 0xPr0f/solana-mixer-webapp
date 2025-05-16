@@ -103,7 +103,20 @@ export type SolanaMixer = {
           }
         },
         {
+          name: 'nullifier'
+          writable: true
+          pda: {
+            seeds: [
+              {
+                kind: 'arg'
+                path: 'nullifierBytes'
+              }
+            ]
+          }
+        },
+        {
           name: 'caller'
+          writable: true
           signer: true
         },
         {
@@ -121,6 +134,12 @@ export type SolanaMixer = {
       ]
       args: [
         {
+          name: 'nullifierBytes'
+          type: {
+            array: ['u8', 32]
+          }
+        },
+        {
           name: 'proof'
           type: 'bytes'
         },
@@ -132,6 +151,10 @@ export type SolanaMixer = {
     }
   ]
   accounts: [
+    {
+      name: 'nullifier'
+      discriminator: [18, 56, 142, 165, 181, 158, 187, 133]
+    },
     {
       name: 'state'
       discriminator: [216, 146, 107, 94, 104, 75, 182, 177]
@@ -213,6 +236,13 @@ export type SolanaMixer = {
       }
     },
     {
+      name: 'nullifier'
+      type: {
+        kind: 'struct'
+        fields: []
+      }
+    },
+    {
       name: 'state'
       type: {
         kind: 'struct'
@@ -259,14 +289,6 @@ export type SolanaMixer = {
                 },
                 33
               ]
-            }
-          },
-          {
-            name: 'nullifiersUsed'
-            type: {
-              vec: {
-                array: ['u8', 32]
-              }
             }
           },
           {
