@@ -135,7 +135,7 @@ export function Navbar() {
         <div className="md:hidden bg-background border-t border-border animate-fade-in">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
             <Link
-              href="/docs"
+              href="https://github.com/2kcmte/solana-mixer-core"
               className="text-muted-foreground hover:text-foreground  px-3 py-2 text-base font-medium flex items-center"
             >
               <FileText className="w-4 h-4 mr-2" /> Docs
