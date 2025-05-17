@@ -11,6 +11,7 @@ const inter = Inter({ subsets: ['latin'] })
 export const metadata: Metadata = {
   title: 'Solana Mixer',
   description: 'Privacy-focused mixer application for Solana',
+  icons: './mixer-logo.png',
   generator: 'v0.dev',
 }
 

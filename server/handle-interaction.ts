@@ -18,7 +18,6 @@ export async function handleCreateNote(amount: number) {
     if (!response.ok) {
       throw new Error('Failed to process deposit')
     }
-    console.log(process.env.TEST)
     const result = await response.json()
     return result
   } catch (error) {
