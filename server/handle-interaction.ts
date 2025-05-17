@@ -125,9 +125,9 @@ export async function generateProofForWithdrawal(
         socket.close()
       }
     }
-    socket.onerror = (e) => {
+    socket.onerror = (e: any) => {
       clear()
-      reject(new Error('WebSocket error'))
+      reject(new Error('WebSocket error', e))
     }
   })
 }

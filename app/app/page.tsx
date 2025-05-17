@@ -48,7 +48,6 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
-import { getSigner } from '@/server/privatekey'
 
 export default function MainInterface() {
   const { connection } = useConnection()
@@ -95,10 +94,6 @@ export default function MainInterface() {
   const depositOnChain = useCallback(
     async (commitment: Uint8Array) => {
       if (!program || !wallet) throw new Error('Wallet not ready')
-      const [statePda] = PublicKey.findProgramAddressSync(
-        [Buffer.from('mixer_state')],
-        new PublicKey(MIXER_PROGRAM_PUBKEY_1SOL)
-      )
       const additionalComputeBudgetInstruction =
         ComputeBudgetProgram.setComputeUnitLimit({
           units: 555555,
@@ -159,12 +154,17 @@ export default function MainInterface() {
     console.log('Withdraw implemented', note, recipientAddress)
     if (!program || !wallet) throw new Error('Wallet not ready')
     setLoading({ ...loading, withdraw: true })
-
-    const noteDetails = await deserializeNote(
-      note,
-      new PublicKey(MIXER_PROGRAM_PUBKEY_1SOL).toBase58() ??
-        MIXER_PROGRAM_PUBKEY_1SOL
-    )
+    let noteDetails: any
+    try {
+      noteDetails = await deserializeNote(
+        note,
+        new PublicKey(MIXER_PROGRAM_PUBKEY_1SOL).toBase58() ??
+          MIXER_PROGRAM_PUBKEY_1SOL
+      )
+    } catch (e) {
+      console.error('withdraw proof error', e)
+      setLoading({ ...loading, withdraw: false })
+    }
     const newKeypair = Keypair.generate()
     const relayerPublicKey = newKeypair.publicKey
     console.log(noteDetails)
@@ -210,27 +210,7 @@ export default function MainInterface() {
       })
 
     try {
-      const tempconnection = new Connection(DEVNET_RPC_URL, {
-        commitment: 'confirmed',
-      })
-      const tempSigner = await getSigner()
-      const wallet = {
-        publicKey: tempSigner.publicKey,
-        signTransaction: async (tx: any) => {
-          tx.partialSign(tempSigner)
-          return tx
-        },
-        signAllTransactions: async (txs: any) => {
-          txs.forEach((tx: any) => tx.partialSign(tempSigner))
-          return txs
-        },
-        payer: tempSigner,
-      }
-      const tempprovider = new AnchorProvider(tempconnection, wallet, {
-        commitment: 'confirmed',
-      })
-      const tempprogram = new Program<SolanaMixer>(MixerIdl, tempprovider)
-      await tempprogram.methods
+      await program.methods
         .withdraw([...nullifierBuf], proofBuf, publicInputsBuf)
         .accounts({
           caller: wallet.publicKey,
