@@ -5,7 +5,7 @@
  * IDL can be found at `target/idl/solana_mixer.json`.
  */
 export type SolanaMixer = {
-  address: 'GQoSxkLjpMYxSHzm4dzoN5HS6AL9QU3WnEETkJu73N3D'
+  address: 'AQW933TrdFxE5q7982Vb57crHjZe3B7EZaHotdXnaQYQ'
   metadata: {
     name: 'solanaMixer'
     version: '0.1.0'

@@ -1,10 +1,10 @@
-"use client"
+'use client'
 
-import type React from "react"
+import type React from 'react'
 
-import { X } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { useEffect } from "react"
+import { X } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { useEffect } from 'react'
 
 interface ModalProps {
   isOpen: boolean
@@ -16,23 +16,23 @@ interface ModalProps {
 export function Modal({ isOpen, onClose, title, children }: ModalProps) {
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && isOpen) {
+      if (e.key === 'Escape' && isOpen) {
         onClose()
       }
     }
 
-    window.addEventListener("keydown", handleEsc)
+    window.addEventListener('keydown', handleEsc)
 
     // Prevent scrolling when modal is open
     if (isOpen) {
-      document.body.style.overflow = "hidden"
+      document.body.style.overflow = 'hidden'
     } else {
-      document.body.style.overflow = ""
+      document.body.style.overflow = ''
     }
 
     return () => {
-      window.removeEventListener("keydown", handleEsc)
-      document.body.style.overflow = ""
+      window.removeEventListener('keydown', handleEsc)
+      document.body.style.overflow = ''
     }
   }, [isOpen, onClose])
 
@@ -46,7 +46,12 @@ export function Modal({ isOpen, onClose, title, children }: ModalProps) {
       >
         <div className="flex items-center justify-between p-4 border-b border-border">
           <h2 className="text-lg font-semibold">{title}</h2>
-          <Button variant="ghost" size="icon" onClick={onClose} className="h-8 w-8">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={onClose}
+            className="h-8 w-8"
+          >
             <X className="h-4 w-4" />
           </Button>
         </div>
