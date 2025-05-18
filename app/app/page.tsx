@@ -11,7 +11,14 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { AmountSlider } from '@/components/amount-slider'
-import { Info, Copy, Check, AlertTriangle, ArrowDownToLine } from 'lucide-react'
+import {
+  Info,
+  Copy,
+  Check,
+  AlertTriangle,
+  ArrowDownToLine,
+  Loader2,
+} from 'lucide-react'
 import { ModalProvider, useModal } from '@/components/modal-provider'
 import { Input } from '@/components/ui/input'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -595,25 +602,32 @@ export default function MainInterface() {
         </p>
 
         <div className="bg-background/50 p-3 rounded-md font-mono text-xs break-all relative group border border-purple-500/20">
-          {note}
-          <Button
-            variant="ghost"
-            size="icon"
-            className="absolute right-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 text-purple-500"
-            onClick={() => {
-              navigator.clipboard.writeText(note)
-              setCopied(true)
-              setTimeout(() => setCopied(false), 2000)
-
-              console.log(depositDetails)
-            }}
-          >
-            {copied ? (
-              <Check className="h-3 w-3" />
-            ) : (
-              <Copy className="h-3 w-3" />
-            )}
-          </Button>
+          {note.length < 5 ? (
+            <div className="flex items-center justify-center py-2">
+              <Loader2 className="h-5 w-5 animate-spin text-purple-500" />
+            </div>
+          ) : (
+            <>
+              {note}
+              <Button
+                variant="ghost"
+                size="icon"
+                className="absolute right-2 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 text-purple-500"
+                onClick={() => {
+                  navigator.clipboard.writeText(note)
+                  setCopied(true)
+                  setTimeout(() => setCopied(false), 2000)
+                  console.log(depositDetails)
+                }}
+              >
+                {copied ? (
+                  <Check className="h-3 w-3" />
+                ) : (
+                  <Copy className="h-3 w-3" />
+                )}
+              </Button>
+            </>
+          )}
         </div>
         <Button
           variant="outline"
