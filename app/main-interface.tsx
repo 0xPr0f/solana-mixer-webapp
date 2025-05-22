@@ -493,7 +493,7 @@ export default function HomePage() {
               <div className="flex items-start mb-5">
                 <GitMerge className="h-6 w-6 text-purple-400 mr-4 mt-1 flex-shrink-0" />
                 <span className="text-gray-300">
-                  Poseidon-hashed IncrementalMerkle tree (depth 20)
+                  Poseidon-hashed Incremental Merkle tree (depth 20)
                 </span>
               </div>
               <div className="flex items-start">
