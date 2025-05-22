@@ -2,6 +2,8 @@
 
 A privacy-focused mixer application for Solana that allows users to deposit and withdraw SOL while maintaining anonymity.
 
+[Prove Server](https://github.com/2kcmte/mixer-prove-server) : The SP1 program (circuit) to generate the ZK proof.  
+[Solana Mixer Core](https://github.com/2kcmte/solana-mixer-core) : Anchor-based Solana Mixer contract and test suite.
 ## Features
 
 - 🔒 Privacy-focused mixing of SOL tokens
