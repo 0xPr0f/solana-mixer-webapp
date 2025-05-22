@@ -95,12 +95,11 @@ export default function HomePage() {
                 Merkle Tree Structure
               </h3>
               <p className="text-gray-300">
-                Poseidon-hashed Merkle tree with depth 20 and a 33-root history
-                buffer, supporting up to 2²⁰ deposits.
+                Poseidon-hashed Incremental Merkle tree with depth 20 and a
+                33-root history buffer, supporting up to 2²⁰ deposits.
               </p>
             </div>
 
-            {/* Card 2 */}
             <div className="bg-[#0a0a0a] rounded-xl p-8 border border-gray-800 hover:border-purple-500/50 transition-all duration-300 hover:shadow-[0_0_15px_rgba(139,92,246,0.15)] group">
               <div className="mb-6 w-14 h-14 rounded-full bg-gradient-to-r from-purple-600 to-teal-400 flex items-center justify-center transform group-hover:scale-110 transition-transform duration-300">
                 <Shield className="h-7 w-7 text-white" />
@@ -131,7 +130,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* How It Works Section */}
       <section className="py-24 bg-black relative">
         <div className="absolute inset-0 z-0 opacity-20">
           <div className="absolute top-1/4 right-1/4 w-64 h-64 rounded-full bg-purple-900/30 blur-3xl"></div>
@@ -157,8 +155,6 @@ export default function HomePage() {
                     xmlns="http://www.w3.org/2000/svg"
                     className="w-full h-full"
                   >
-                    {/* Merkle Tree Visualization */}
-                    {/* Root */}
                     <circle
                       cx="200"
                       cy="50"
@@ -176,7 +172,6 @@ export default function HomePage() {
                       Root
                     </text>
 
-                    {/* Level 1 */}
                     <line
                       x1="200"
                       y1="65"
@@ -210,7 +205,6 @@ export default function HomePage() {
                       strokeWidth="2"
                     />
 
-                    {/* Level 2 */}
                     <line
                       x1="150"
                       y1="112"
@@ -349,7 +343,6 @@ export default function HomePage() {
                       strokeDasharray="2"
                     />
 
-                    {/* Leaves (level 20 implied) */}
                     <text
                       x="200"
                       y="220"
@@ -369,7 +362,6 @@ export default function HomePage() {
                       Depth 20
                     </text>
 
-                    {/* Deposits at the bottom */}
                     <rect
                       x="80"
                       y="280"
@@ -390,7 +382,6 @@ export default function HomePage() {
                       2²⁰ Deposits
                     </text>
 
-                    {/* Buffer Visualization */}
                     <rect
                       x="320"
                       y="50"
@@ -502,7 +493,7 @@ export default function HomePage() {
               <div className="flex items-start mb-5">
                 <GitMerge className="h-6 w-6 text-purple-400 mr-4 mt-1 flex-shrink-0" />
                 <span className="text-gray-300">
-                  Poseidon-hashed Merkle tree (depth 20)
+                  Poseidon-hashed IncrementalMerkle tree (depth 20)
                 </span>
               </div>
               <div className="flex items-start">
