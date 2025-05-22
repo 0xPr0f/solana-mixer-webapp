@@ -41,8 +41,8 @@ export default function HomePage() {
           </h1>
 
           <p className="text-xl md:text-2xl text-gray-300 max-w-3xl mb-10 leading-relaxed">
-            A decentralized privacy-preserving fixed-denomination mixer on
-            Solana, implemented in Rust + Anchor
+            A privacy-preserving, fixed-denomination mixer on Solana,
+            implemented in Anchor and verified with Succinct SP1.
           </p>
 
           <Link href="/app">
@@ -276,7 +276,6 @@ export default function HomePage() {
                       strokeWidth="2"
                     />
 
-                    {/* More Levels (implied) */}
                     <line
                       x1="125"
                       y1="160"
@@ -481,7 +480,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Technical Details Section */}
       <section className="py-24 bg-[#111111]">
         <div className="container mx-auto px-4">
           <div className="max-w-3xl mx-auto text-center mb-16">
@@ -602,9 +600,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* CTA Section */}
       <section className="py-24 bg-gradient-to-b from-[#111111] to-black relative overflow-hidden">
-        {/* Background elements */}
         <div className="absolute inset-0 z-0 opacity-30">
           <div className="absolute top-1/4 left-1/3 w-64 h-64 rounded-full bg-purple-900/20 blur-3xl"></div>
           <div className="absolute bottom-1/3 right-1/4 w-48 h-48 rounded-full bg-teal-900/20 blur-3xl"></div>
@@ -630,7 +626,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Footer */}
       <footer className="py-8 bg-black border-t border-gray-900">
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row justify-between items-center">
